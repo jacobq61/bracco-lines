@@ -1,0 +1,16 @@
+name: keepalive
+# GitHub disables scheduled workflows after 60 days without repo activity. The feed pushes constantly,
+# but this re-enables the schedule monthly as a backstop.
+on:
+  schedule:
+    - cron: '0 12 1 * *'
+  workflow_dispatch:
+permissions:
+  actions: write
+jobs:
+  enable:
+    runs-on: ubuntu-latest
+    steps:
+      - run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/lines.yml/enable"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

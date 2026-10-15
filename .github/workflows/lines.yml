@@ -1,21 +1,20 @@
 name: lines
+# Each run loops for ~5.5h, refreshing every 3 min (bin/loop.sh). The cron only needs to keep one run
+# queued behind the active one; late cron starts don't matter because the queued run starts the moment
+# the active one ends.
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/20 * * * *'
   workflow_dispatch:
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 concurrency:
   group: lines
   cancel-in-progress: false
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
-    environment:
-      name: github-pages
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -30,10 +29,7 @@ jobs:
           key: pw-${{ hashFiles('package-lock.json') }}
       - run: npx playwright install --only-shell --with-deps chromium
       - run: npm test
-      - name: Read Bracco lines
-        run: OUT=site/landing-lines.json node bin/run.mjs
-      - run: printf 'Bracco landing lines feed. See landing-lines.json\n' > site/index.html
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-      - uses: actions/deploy-pages@v4
+      - name: Refresh lines every 3 minutes
+        run: bin/loop.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

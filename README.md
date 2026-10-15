@@ -14,15 +14,11 @@ npm run lines
 
 Writes `out/landing-lines.json`. Set `OUT=/path/to/site/lp/landing-lines.json` to write it next to the landing page instead.
 
-## Schedule it (every 5 minutes)
+## Where it runs
 
-On any always-on Mac or Linux box with access to the landing page's web folder:
+GitHub Actions on jacobq61/bracco-lines. Each run loops for about 5.5 hours and refreshes every 3 minutes (`bin/loop.sh`), pushing `landing-lines.json` to the `gh-pages` branch. The feed is served at https://jacobq61.github.io/bracco-lines/landing-lines.json. A 20-minute cron keeps the next run queued, and `keepalive.yml` re-enables the schedule monthly so GitHub's 60-day inactivity rule never turns it off.
 
-```
-*/5 * * * * cd /path/to/bracco-lines-stopgap && OUT=/var/www/playbracco/lp/landing-lines.json /usr/local/bin/node bin/run.mjs >> lines.log 2>&1
-```
-
-If the page is on a host you can't write to directly, point `OUT` at a local file and push it with your usual deploy step (rsync, Netlify CLI, etc).
+To run it on your own server instead, cron `node bin/run.mjs` every 5 minutes with `OUT` set to the page's folder.
 
 ## Safety rules built in
 
