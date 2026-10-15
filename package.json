@@ -1,0 +1,17 @@
+{
+  "name": "bracco-lines-stopgap",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Stopgap: reads Bracco's public sportsbook pages in a headless browser and writes landing-lines.json for the landing pages.",
+  "scripts": {
+    "lines": "node bin/run.mjs",
+    "test": "node --test src/domain/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "playwright": "^1.64.1"
+  }
+}
