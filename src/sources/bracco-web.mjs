@@ -3,6 +3,7 @@
 // fetchSlate() contract (returns parsed games) and swap it in bin/run.mjs. Nothing else changes.
 
 import {chromium} from 'playwright';
+import {blockTrackers} from './block-trackers.mjs';
 import {parseLeagueText} from '../domain/parse.mjs';
 
 export const LEAGUES = [
@@ -25,6 +26,7 @@ export function createBraccoWebSource({base = 'https://game.playbracco.com', log
           let parsed = [], lastErr = null, lastSeen = '';
           for (let attempt = 0; attempt < 2 && !parsed.length; attempt++) {
             const page = await browser.newPage({viewport: {width: 1440, height: 1000}, timezoneId: 'America/New_York', locale: 'en-US'});   // dates parse as EDT/EST
+            await blockTrackers(page);   // no fake visits in Bracco's ad and analytics data
             try {
               await page.goto(base + path, {waitUntil: 'domcontentloaded', timeout: 45000});
               // The game list renders after the shell; poll until the parsed count is non-zero and stable.
