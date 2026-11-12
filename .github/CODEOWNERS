@@ -1,0 +1,19 @@
+# Guardrail and deploy files: every change needs Jacob's review. GitHub enforces this only when
+# branch protection on main has "Require review from Code Owners" on (docs/OPS.md).
+
+# Agent instructions and the Kaz Flock scope boundary
+**/AGENTS.md @jacobq61
+**/CLAUDE.md @jacobq61
+
+# CI, the scope guard and templates
+/.github/CODEOWNERS @jacobq61
+/.github/workflows/ @jacobq61
+/.github/scripts/ @jacobq61
+/.github/scope-guard-allow.txt @jacobq61
+/.github/pull_request_template.md @jacobq61
+
+# Deploy: the publisher loop that force-pushes the feed to gh-pages
+/bin/loop.sh @jacobq61
+
+# Ops and secrets inventory
+/docs/OPS.md @jacobq61
