@@ -1,0 +1,31 @@
+name: Scope guard
+
+# Kaz Flock hard boundary (AGENTS.md, "Project scope"): fails a pull request whose diff adds a
+# reference to an out-of-scope system. Logic and patterns: .github/scripts/scope-guard.sh.
+# Exemptions: .github/scope-guard-allow.txt. Both are CODEOWNERS-protected.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  scope:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check for out-of-scope references
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base="${{ github.event.pull_request.base.sha }}"
+          else
+            base="${{ github.event.before }}"
+            if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then base="HEAD~1"; fi
+          fi
+          bash .github/scripts/scope-guard.sh "$base"

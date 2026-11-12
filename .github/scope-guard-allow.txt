@@ -1,0 +1,10 @@
+# Exemptions for .github/scripts/scope-guard.sh. Changes need owner review (.github/CODEOWNERS).
+# <path-glob> file|block   (block: only lines inside the kaz-flock-scope BEGIN/END markers)
+# The Bracco scrapers (src/sources/bracco-*.mjs) read game.playbracco.com. That host is not a blocked
+# identifier, so they need no exemption; add one here only with owner review.
+.github/scripts/scope-guard.sh file
+.github/scope-guard-allow.txt file
+docs/OPS.md file
+AGENTS.md block
+CLAUDE.md block
+.github/pull_request_template.md block
