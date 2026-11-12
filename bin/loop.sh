@@ -15,11 +15,15 @@ while [ $SECONDS -lt $END ]; do
       printf 'Bracco landing lines feed. See landing-lines.json\n' > index.html && touch .nojekyll &&
       git add -A && git -c user.name=bracco-lines -c user.email=bracco-lines@users.noreply.github.com commit -qm "lines $(date -u +%FT%TZ)" &&
       git push -qf "$REPO" gh-pages
-    ) && echo "published" && FAILS=0
+    ) && echo "published" && {
+      [ $FAILS -ge 3 ] && node bin/notify.mjs kaz-ops info "bracco-lines recovered after $FAILS failed reads"
+      FAILS=0
+    }
   else
     echo "read failed; keeping the last published file"
     FAILS=$((FAILS + 1))
     # ~30 minutes of failures: fail the job so GitHub emails the repo owner. The next queued run keeps trying.
+    [ $FAILS -eq 3 ] && node bin/notify.mjs kaz-ops warn "bracco-lines: 3 failed reads in a row (~9 min), still serving the last good file"
     [ $FAILS -ge 10 ] && { echo "::error::Bracco lines unreadable for 30 minutes (site down or layout changed)"; exit 1; }
   fi
   wait=$((180 - (SECONDS - start))); [ $wait -gt 0 ] && sleep $wait

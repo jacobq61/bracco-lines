@@ -6,7 +6,8 @@
   "description": "Stopgap: reads Bracco's public sportsbook pages in a headless browser and writes landing-lines.json for the landing pages.",
   "scripts": {
     "lines": "node bin/run.mjs",
-    "test": "node --test src/domain/*.test.mjs"
+    "check": "for f in bin/*.mjs src/*.mjs src/*/*.mjs; do node --check \"$f\" || exit 1; done",
+    "test": "node --test src/domain/*.test.mjs src/*.test.mjs"
   },
   "engines": {
     "node": ">=20"

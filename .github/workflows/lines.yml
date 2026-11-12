@@ -33,3 +33,17 @@ jobs:
         run: bin/loop.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEARTBEAT_URL_BRACCO_LINES: ${{ secrets.HEARTBEAT_URL_BRACCO_LINES }}
+          MATRIX_HOMESERVER: ${{ secrets.MATRIX_HOMESERVER }}
+          MATRIX_BOT_TOKEN: ${{ secrets.MATRIX_BOT_TOKEN }}
+          MATRIX_ROOM_KAZ_OPS: ${{ secrets.MATRIX_ROOM_KAZ_OPS }}
+          MATRIX_ROOM_ALERTS_FIREHOSE: ${{ secrets.MATRIX_ROOM_ALERTS_FIREHOSE }}
+      - name: Alert #kaz-ops
+        if: failure()
+        run: node bin/notify.mjs kaz-ops error "lines job failed, feed is going stale: $RUN_URL"
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          MATRIX_HOMESERVER: ${{ secrets.MATRIX_HOMESERVER }}
+          MATRIX_BOT_TOKEN: ${{ secrets.MATRIX_BOT_TOKEN }}
+          MATRIX_ROOM_KAZ_OPS: ${{ secrets.MATRIX_ROOM_KAZ_OPS }}
+          MATRIX_ROOM_ALERTS_FIREHOSE: ${{ secrets.MATRIX_ROOM_ALERTS_FIREHOSE }}

@@ -4,6 +4,7 @@
 //   MORE_BASE=https://...            base URL for the "All NFL lines" links (default game.playbracco.com)
 //   FUTURES_OUT=/path/futures.json   Bracco outright odds (default next to OUT); FUTURES_EVERY_MIN=30
 //   MIN_GAMES=8                      refuse to overwrite the last good file if fewer games than this came back
+//   HEARTBEAT_URL_BRACCO_LINES       optional Better Stack heartbeat, pinged after every good publish
 
 import {createBraccoWebSource} from '../src/sources/bracco-web.mjs';
 import {createFilePublisher} from '../src/publish/file.mjs';
@@ -27,6 +28,8 @@ if (count < MIN_GAMES) {
 }
 await publisher.publish(feed);
 log(`wrote ${count} games, ${feed.rows.length} rows -> ${OUT}${errors.length ? ` (skipped: ${errors.join('; ')})` : ''}`);
+const beat = process.env.HEARTBEAT_URL_BRACCO_LINES?.trim();
+if (beat) await fetch(beat, {signal: AbortSignal.timeout(5000)}).catch(() => {});
 
 // Futures (outrights) move slowly: refresh when the last file is older than FUTURES_EVERY_MIN. Never blocks the lines.
 const FUT_OUT = process.env.FUTURES_OUT || OUT.replace(/[^/]+$/, 'futures.json');
