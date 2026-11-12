@@ -3,7 +3,7 @@
 ## How it was checked
 
 ## Checklist
-- [ ] Stays inside the Kaz Flock scope below: Bracco is read only through its public pages; no Bracco repo, Bracco infra, Madhaus or other out-of-scope system touched or referenced
+- [ ] Stays inside the Kaz Flock scope below: Bracco is read only through its public pages; no Bracco repo, Bracco infra or other out-of-scope system touched or referenced
 - [ ] `npm test` passes (required for parser changes)
 - [ ] Feed shape unchanged, or `SPEC.md` and the landing pages' loader updated together
 
